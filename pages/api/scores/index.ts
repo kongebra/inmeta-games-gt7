@@ -59,6 +59,8 @@ export default async function handler(
 
     if (thisTime < bestTime) {
       await sendSlackMessage(
+        player.imageUrl,
+        fullName,
         `*${fullName}* har satt ny beste rundetid: *${laptime}*`
       );
 
@@ -68,6 +70,8 @@ export default async function handler(
     const isFirstLaptime = !scores.some((x) => x.playerId === record.playerId);
     if (isFirstLaptime) {
       await sendSlackMessage(
+        player.imageUrl,
+        fullName,
         `*${fullName}* has satt sin første rundetid: *${laptime}*`
       );
 
@@ -80,14 +84,33 @@ export default async function handler(
   return res.status(400).json({ message: "bad request" });
 }
 
-async function sendSlackMessage(message: string) {
+async function sendSlackMessage(
+  image_url: string,
+  alt_text: string,
+  message: string
+) {
   await fetch(process.env.SLACK_WEBHOOK!, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      text: message,
+      blocks: [
+        {
+          type: "context",
+          elements: [
+            {
+              type: "image",
+              image_url,
+              alt_text,
+            },
+            {
+              type: "mrkdwn",
+              text: message,
+            },
+          ],
+        },
+      ],
     }),
   });
 }

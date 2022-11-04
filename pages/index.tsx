@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { Score } from "@prisma/client";
-import { Box, Button, Container, Flex, Heading, Stack } from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 
 import usePlayers from "../hooks/use-players";
 import useScores, { calculateTime } from "../hooks/use-scores";
@@ -100,23 +100,30 @@ export default function Home() {
                   justify="space-between"
                   align="center"
                   fontSize="1.75rem"
-                  rounded={"md"}
-                  fontFamily="cursive"
+                  rounded="sm"
                 >
                   <Flex align="center" gap={4}>
-                    <Box as="span" minW={8}>
+                    <Box
+                      as="span"
+                      minW={8}
+                      fontFamily="fantasy"
+                      fontWeight="bold"
+                    >
                       {index + 1}
                     </Box>
+
                     <PlayerImage player={getPlayer(score.playerId)} size={50} />
-                    <strong>{getPlayerName(score.playerId)}</strong>
+                    <Text fontFamily="fantasy">
+                      {getPlayerName(score.playerId)}
+                    </Text>
                   </Flex>
 
-                  <span>
+                  <Box fontFamily="monospace">
                     <strong>
                       {score.min}.{String(score.sec).padStart(2, "0")}:
                       {String(score.ms).padStart(3, "0")}
                     </strong>
-                  </span>
+                  </Box>
                 </Flex>
               );
             })}

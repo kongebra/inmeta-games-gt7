@@ -23,6 +23,19 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       return A - B;
     });
 
+  const getEmoji = (index: number) => {
+    switch (index) {
+      case 0:
+        return `🥇`;
+      case 1:
+        return `🥈`;
+      case 2:
+        return `🥉`;
+      default:
+        return `🏁`;
+    }
+  };
+
   res.status(200).json({
     blocks: [
       {
@@ -32,7 +45,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
           text: "Leaderboard",
         },
       },
-      ...result.map((item) => ({
+      ...result.map((item, index) => ({
         type: "context",
         elements: [
           {
@@ -43,28 +56,20 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             }`,
           },
           {
-            type: "mrkdwn",
-            text: `*${item.player?.firstName || ""} ${
-              item.player?.lastName || ""
-            }*`,
-          },
-          {
-            type: "mrkdwn",
-            text: ` `,
-          },
-          {
-            type: "mrkdwn",
-            text: ` `,
-          },
-          {
-            type: "mrkdwn",
-            text: ` `,
+            type: "plain_text",
+            text: getEmoji(index),
           },
           {
             type: "mrkdwn",
             text: `*${item.min}.${String(item.sec).padStart(2, "0")}:${String(
               item.ms
             ).padStart(3, "0")}*`,
+          },
+          {
+            type: "mrkdwn",
+            text: `*${item.player?.firstName || ""} ${
+              item.player?.lastName || ""
+            }*`,
           },
         ],
       })),

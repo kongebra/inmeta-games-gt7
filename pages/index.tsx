@@ -31,7 +31,7 @@ const PlayerImage: React.FC<PlayerImageProps> = ({ player, size = 32 }) => {
   }
 
   return (
-    <Box overflow={"hidden"} rounded="full">
+    <Box overflow={"hidden"} rounded="md">
       <Image {...imageProps} alt={player.firstName} className="object-fit" />
     </Box>
   );

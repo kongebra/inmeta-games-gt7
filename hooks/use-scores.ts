@@ -1,5 +1,6 @@
 import { Score } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import usePlayers from "./use-players";
 
 export const calculateTime = (score: Score): number => {
   return score.min + score.sec / 60 + score.ms / (60 * 1000);
@@ -48,7 +49,7 @@ export default function useScores() {
   });
 
   const upsertScore = useMutation(postScore, {
-    onSuccess(data, variables, context) {
+    async onSuccess(data, variables, context) {
       queryClient.invalidateQueries(["scores"]);
     },
   });

@@ -88,19 +88,6 @@ export default function Home() {
             Top Gear - Inmeta Games
           </Heading>
 
-          {/* <Button
-            type="button"
-            colorScheme={"blue"}
-            onClick={() => setIsOpen(true)}
-          >
-            Registrer ny score
-          </Button> */}
-          {/* <Flex justify="space-between" align="center" py={8}>
-            <Heading>Inmeta Games Top Gear</Heading>
-
-         
-          </Flex> */}
-
           <Stack>
             {scores.sort(sortScores)?.map((score, index) => {
               const player = getPlayer(score.playerId);
@@ -113,7 +100,7 @@ export default function Home() {
                   justify="space-between"
                   align="center"
                   fontSize="1.75rem"
-                  rounded={"sm"}
+                  rounded={"md"}
                   fontFamily="cursive"
                 >
                   <Flex align="center" gap={4}>

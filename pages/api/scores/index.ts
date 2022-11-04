@@ -81,16 +81,13 @@ export default async function handler(
 }
 
 async function sendSlackMessage(message: string) {
-  await fetch(
-    `https://hooks.slack.com/services/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`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        text: message,
-      }),
-    }
-  );
+  await fetch(process.env.SLACK_WEBHOOK!, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      text: message,
+    }),
+  });
 }

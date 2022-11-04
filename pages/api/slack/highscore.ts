@@ -46,7 +46,23 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             type: "mrkdwn",
             text: `*${item.player?.firstName || ""} ${
               item.player?.lastName || ""
-            }* - *${item.min}.${String(item.sec).padStart(2, "0")}:${String(
+            }*`,
+          },
+          {
+            type: "mrkdwn",
+            text: ` `,
+          },
+          {
+            type: "mrkdwn",
+            text: ` `,
+          },
+          {
+            type: "mrkdwn",
+            text: ` `,
+          },
+          {
+            type: "mrkdwn",
+            text: `*${item.min}.${String(item.sec).padStart(2, "0")}:${String(
               item.ms
             ).padStart(3, "0")}*`,
           },

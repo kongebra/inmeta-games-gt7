@@ -11,4 +11,6 @@ export type Player = {
       _ref: string;
     };
   };
+
+  imageUrl: string;
 };

@@ -89,7 +89,12 @@ async function sendSlackMessage(
   alt_text: string,
   message: string
 ) {
-  await fetch(process.env.SLACK_WEBHOOK!, {
+  const url = process.env.SLACK_WEBHOOK;
+  if (!url) {
+    throw new Error("cannot find slack webhook");
+  }
+
+  const resp = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -113,4 +118,6 @@ async function sendSlackMessage(
       ],
     }),
   });
+
+  console.log("SLACK_WEBHOOK", resp);
 }

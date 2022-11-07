@@ -45,7 +45,9 @@ type Props = {
 };
 
 export default function useScores(
-  { refetchInterval }: Props = { refetchInterval: 1000 }
+  { refetchInterval }: Props = {
+    refetchInterval: 1000 * 10, // every 10th second
+  }
 ) {
   const queryClient = useQueryClient();
 

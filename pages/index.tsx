@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Score } from "@prisma/client";
 import { Box, Container, Flex, Heading, Stack, Text } from "@chakra-ui/react";
@@ -22,7 +22,11 @@ const PlayerImage: React.FC<PlayerImageProps> = ({ player, size = 32 }) => {
     (player?.image as any) || null,
     {
       imageBuilder: (builder) =>
-        builder.crop("focalpoint").fit("crop").width(size).height(size),
+        builder
+          .crop("focalpoint")
+          .fit("crop")
+          .width(size)
+          .height(size),
     }
   ) as any;
 
@@ -80,6 +84,32 @@ export default function Home() {
     return players.find((player) => player._id === playerId);
   };
 
+  const sortedScores = useMemo(() => scores.sort(sortScores), [
+    scores,
+    sortScores,
+  ]);
+
+  const bestLaptime = useMemo(() => {
+    if (sortedScores.length > 0) {
+      return sortedScores[0];
+    }
+
+    return undefined;
+  }, []);
+
+  const timeBehindBestTime = useCallback((score: Score) => {
+    if (bestLaptime) {
+      const bestTime = calculateTime(bestLaptime);
+      const thisTime = calculateTime(score);
+
+      const diff = thisTime - bestTime;
+
+      return diff * 60;
+    }
+
+    return 0;
+  }, []);
+
   return (
     <>
       <Box minW={"100vw"} minH={"100vh"} bg={"gray.300"}>
@@ -91,6 +121,8 @@ export default function Home() {
           <Stack>
             {scores.sort(sortScores)?.map((score, index) => {
               const player = getPlayer(score.playerId);
+              const timeBehindLeader = timeBehindBestTime(score);
+
               return (
                 <Flex
                   key={score.id}
@@ -102,7 +134,7 @@ export default function Home() {
                   fontSize="1.75rem"
                   rounded="sm"
                 >
-                  <Flex align="center" gap={4}>
+                  <Flex align="center" gap={4} flex="1">
                     <Box
                       as="span"
                       minW={8}
@@ -118,12 +150,20 @@ export default function Home() {
                     </Text>
                   </Flex>
 
-                  <Box fontFamily="monospace">
+                  <Flex fontFamily="monospace" alignItems="center" gap={4}>
+                    {timeBehindLeader === 0 ? (
+                      <span></span>
+                    ) : (
+                      <Text fontStyle="italic">
+                        {`+${timeBehindLeader.toFixed(3)}sec`}
+                      </Text>
+                    )}
+
                     <strong>
                       {score.min}.{String(score.sec).padStart(2, "0")}:
                       {String(score.ms).padStart(3, "0")}
                     </strong>
-                  </Box>
+                  </Flex>
                 </Flex>
               );
             })}

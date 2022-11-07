@@ -9,7 +9,7 @@ const fetchPlayers = async (): Promise<Player[]> => {
 export default function usePlayers() {
   const { data: players, ...rest } = useQuery(["players"], fetchPlayers, {
     initialData: [],
-    refetchInterval: 60 * 5000,
+    refetchInterval: 60 * 1000 * 5, // every 5th minute
   });
 
   return { players, ...rest };

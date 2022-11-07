@@ -95,20 +95,23 @@ export default function Home() {
     }
 
     return undefined;
-  }, []);
+  }, [sortedScores]);
 
-  const timeBehindBestTime = useCallback((score: Score) => {
-    if (bestLaptime) {
-      const bestTime = calculateTime(bestLaptime);
-      const thisTime = calculateTime(score);
+  const timeBehindBestTime = useCallback(
+    (score: Score) => {
+      if (bestLaptime) {
+        const bestTime = calculateTime(bestLaptime);
+        const thisTime = calculateTime(score);
 
-      const diff = thisTime - bestTime;
+        const diff = thisTime - bestTime;
 
-      return diff * 60;
-    }
+        return diff * 60;
+      }
 
-    return 0;
-  }, []);
+      return 0;
+    },
+    [bestLaptime]
+  );
 
   return (
     <>
@@ -120,7 +123,6 @@ export default function Home() {
 
           <Stack>
             {scores.sort(sortScores)?.map((score, index) => {
-              const player = getPlayer(score.playerId);
               const timeBehindLeader = timeBehindBestTime(score);
 
               return (

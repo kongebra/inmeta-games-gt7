@@ -34,7 +34,7 @@ const RegisterPage: NextPage = () => {
     scores,
     upsertScore,
     isLoading: isInitialLoadingScores,
-  } = useScores();
+  } = useScores({ refetchInterval: 1000 * 10 });
 
   const isLoading = useMemo(
     () => isInitialLoadingPlayers || isInitialLoadingScores,
@@ -102,7 +102,7 @@ const RegisterPage: NextPage = () => {
 
       return " (Ingen tid satt enda)";
     },
-    [scores]
+    [scores, players]
   );
 
   const options = useMemo(() => {
@@ -110,7 +110,7 @@ const RegisterPage: NextPage = () => {
       value: player._id,
       label: `${player.firstName} ${player.lastName} ${getScore(player._id)}`,
     }));
-  }, [players]);
+  }, [scores, players]);
 
   if (isLoading) {
     return (

@@ -4,6 +4,7 @@ import type { Score } from "@prisma/client";
 import { getClient } from "../../../lib/sanity";
 import { Player } from "../../../types";
 import { calculateTime } from "../../../hooks/use-scores";
+import { playerQuery } from "../../../constants";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,7 +19,7 @@ export default async function handler(
   if (req.method === "POST") {
     const record = JSON.parse(req.body) as Score;
 
-    const players = await getClient().fetch<Player[]>(`*[_type == "player"][]`);
+    const players = await getClient().fetch<Player[]>(playerQuery);
     const scores = await prisma.score.findMany();
 
     const result = await prisma.score.upsert({
@@ -94,30 +95,34 @@ async function sendSlackMessage(
     throw new Error("cannot find slack webhook");
   }
 
+  const body = {
+    blocks: [
+      {
+        type: "context",
+        elements: [
+          {
+            type: "image",
+            image_url: image_url,
+            alt_text,
+          },
+          {
+            type: "mrkdwn",
+            text: message,
+          },
+        ],
+      },
+    ],
+  };
+
   const resp = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      blocks: [
-        {
-          type: "context",
-          elements: [
-            {
-              type: "image",
-              image_url,
-              alt_text,
-            },
-            {
-              type: "mrkdwn",
-              text: message,
-            },
-          ],
-        },
-      ],
-    }),
+    body: JSON.stringify(body),
   });
 
-  console.log("SLACK_WEBHOOK", resp);
+  if (!resp.ok) {
+    console.log("SLACK_WEBHOOK", resp, JSON.stringify(body));
+  }
 }

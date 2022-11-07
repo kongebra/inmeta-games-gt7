@@ -1,14 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { playerQuery } from "../../../constants";
 import { calculateTime } from "../../../hooks/use-scores";
 import { prisma } from "../../../lib/prisma";
 import { getClient } from "../../../lib/sanity";
 import { Player } from "../../../types";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
-  const players = await getClient().fetch<Player[]>(`*[_type == "player"][] {
-    ...,
-    "imageUrl": image.asset->url
-  }`);
+  const players = await getClient().fetch<Player[]>(playerQuery);
   const scores = await prisma.score.findMany();
 
   const result = scores

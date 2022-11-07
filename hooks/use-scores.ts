@@ -40,12 +40,18 @@ const deleteScoreRequest = async (id: number) => {
   return await resp.json();
 };
 
-export default function useScores() {
+type Props = {
+  refetchInterval: number;
+};
+
+export default function useScores(
+  { refetchInterval }: Props = { refetchInterval: 1000 }
+) {
   const queryClient = useQueryClient();
 
   const { data: scores, ...rest } = useQuery(["scores"], fetchScores, {
     initialData: [],
-    refetchInterval: 1000,
+    refetchInterval,
   });
 
   const upsertScore = useMutation(postScore, {

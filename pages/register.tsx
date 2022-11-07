@@ -22,15 +22,24 @@ import {
 } from "@chakra-ui/react";
 import { Score } from "@prisma/client";
 import { NextPage } from "next";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import usePlayers from "../hooks/use-players";
 import useScores from "../hooks/use-scores";
 import { Player } from "../types";
 
 const RegisterPage: NextPage = () => {
-  const { players } = usePlayers();
-  const { scores, upsertScore } = useScores();
+  const { players, isLoading: isInitialLoadingPlayers } = usePlayers();
+  const {
+    scores,
+    upsertScore,
+    isLoading: isInitialLoadingScores,
+  } = useScores();
+
+  const isLoading = useMemo(
+    () => isInitialLoadingPlayers || isInitialLoadingScores,
+    [isInitialLoadingPlayers, isInitialLoadingScores]
+  );
 
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -75,23 +84,43 @@ const RegisterPage: NextPage = () => {
       });
   });
 
-  const sortPlayers = (a: Player, b: Player) => {
+  const sortPlayers = useCallback((a: Player, b: Player) => {
     const A = `${a.firstName} ${a.lastName}`;
     const B = `${b.firstName} ${b.lastName}`;
 
     return A.localeCompare(B);
-  };
-
-  const getScore = useCallback((playerId: string) => {
-    const found = scores.find((score) => score.playerId === playerId);
-    if (found) {
-      return ` (${found.min}.${String(found.sec).padStart(2, "0")}:${String(
-        found.ms
-      ).padStart(3, "0")})`;
-    }
-
-    return " (Ingen tid satt enda)";
   }, []);
+
+  const getScore = useCallback(
+    (playerId: string) => {
+      const found = scores.find((score) => score.playerId === playerId);
+      if (found) {
+        return ` (${found.min}.${String(found.sec).padStart(2, "0")}:${String(
+          found.ms
+        ).padStart(3, "0")})`;
+      }
+
+      return " (Ingen tid satt enda)";
+    },
+    [scores]
+  );
+
+  const options = useMemo(() => {
+    return players.sort(sortPlayers).map((player) => ({
+      value: player._id,
+      label: `${player.firstName} ${player.lastName} ${getScore(player._id)}`,
+    }));
+  }, [players]);
+
+  if (isLoading) {
+    return (
+      <Flex w={"100vw"} h={"100vh"} bg="gray.200" alignItems="center">
+        <Container maxW="container.sm">
+          <Box bg="white" rounded="md" p={8}></Box>
+        </Container>
+      </Flex>
+    );
+  }
 
   return (
     <>
@@ -116,10 +145,9 @@ const RegisterPage: NextPage = () => {
                   autoFocus
                   size="lg"
                 >
-                  {players.sort(sortPlayers).map((player) => (
-                    <option key={player._id} value={player._id}>
-                      {player.firstName} {player.lastName}
-                      {getScore(player._id)}
+                  {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
                     </option>
                   ))}
                 </Select>

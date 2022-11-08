@@ -148,6 +148,10 @@ export default function Home() {
               const avgLine =
                 currentTime > averageTime && prevTime < averageTime;
 
+              const bestTimeInTime = bestLaptime
+                ? calculateTime(bestLaptime)
+                : 0;
+
               return (
                 <React.Fragment key={score.id}>
                   {avgLine ? (
@@ -157,14 +161,17 @@ export default function Home() {
                       justify="center"
                       alignItems="center"
                     >
-                      <Text
-                        color="white"
-                        fontSize="1.5rem"
-                        fontWeight="semibold"
-                      >
-                        Snittlinja: {averageTimeMinSecMs.min}.
-                        {String(averageTimeMinSecMs.sec).padStart(2, "0")}:
-                        {String(averageTimeMinSecMs.ms).padStart(3, "0")}
+                      <Text color="white" fontSize="1.5rem">
+                        <Box as="span" fontStyle="italic" mr={2}>
+                          +{((averageTime - bestTimeInTime) * 60).toFixed(3)}
+                          sec
+                        </Box>
+                        <Box as="span" fontWeight="semibold">
+                          {averageTimeMinSecMs.min}.
+                          {String(averageTimeMinSecMs.sec).padStart(2, "0")}:
+                          {String(averageTimeMinSecMs.ms).padStart(3, "0")}{" "}
+                        </Box>
+                        <Box as="span">{" er gjennomsnittstid"}</Box>
                       </Text>
                     </Flex>
                   ) : null}

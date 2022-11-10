@@ -38,8 +38,10 @@ const PlayerImage: React.FC<PlayerImageProps> = ({ player, size = 32 }) => {
 };
 
 export default function Home() {
-  const { players } = usePlayers();
-  const { scores } = useScores();
+  const { players, isLoading: isLoadingPlayers } = usePlayers();
+  const { scores, isLoading: isLoadingScores } = useScores();
+
+  const isLoading = isLoadingPlayers || isLoadingScores;
 
   const getPlayerName = useCallback(
     (playerId: string): string => {
@@ -128,6 +130,10 @@ export default function Home() {
 
     return { min, sec, ms };
   }, [averageTime]);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <>

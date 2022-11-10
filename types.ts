@@ -13,4 +13,11 @@ export type Player = {
   };
 
   imageUrl: string;
+
+  dep: {
+    name: string;
+    slug: {
+      current: string;
+    };
+  };
 };

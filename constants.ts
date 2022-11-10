@@ -1,4 +1,5 @@
 export const playerQuery = `*[_type == "player"][] {
     ...,
-    "imageUrl": image.asset->url
+    "imageUrl": image.asset->url,
+    "dep": department->
   }`;

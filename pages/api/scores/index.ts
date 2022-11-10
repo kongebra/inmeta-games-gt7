@@ -79,6 +79,18 @@ export default async function handler(
       return res.status(200).json(result);
     }
 
+    const currentScore = scores.find((x) => x.playerId === record.playerId)!;
+    const currentTime = calculateTime(currentScore);
+    if (thisTime < currentTime) {
+      await sendSlackMessage(
+        player.imageUrl,
+        fullName,
+        `*${fullName}* har satt ny personlig beste rundetid: *${laptime}*`
+      );
+
+      return res.status(200).json(result);
+    }
+
     return res.status(200).json(result);
   }
 

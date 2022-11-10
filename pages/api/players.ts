@@ -2,8 +2,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { playerQuery } from "../../constants";
 import { getClient } from "../../lib/sanity";
 
-const query = `*[_type == "player"][]`;
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse

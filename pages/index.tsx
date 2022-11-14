@@ -140,7 +140,7 @@ export default function Home() {
       <Box minW={"100vw"} minH={"100vh"} bg={"gray.300"}>
         <Container maxW="container.lg" pt={4}>
           <Heading textAlign={"center"} fontSize={"4rem"} mb={4}>
-            Top Gear - Inmeta Games
+            F1 - Abu Dhabi - Time Trial
           </Heading>
 
           <Stack>
@@ -160,7 +160,7 @@ export default function Home() {
 
               return (
                 <React.Fragment key={score.id}>
-                  {avgLine ? (
+                  {avgLine && prevTime !== -1 ? (
                     <Flex
                       p={0.5}
                       bg="gray.700"
